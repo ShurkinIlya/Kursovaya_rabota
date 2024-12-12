@@ -1,0 +1,106 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node{
+    int data;
+    struct node *next;
+} Node;
+
+Node* create_list(){
+    return NULL;
+}
+
+void add_element(Node** head, int index, int data) {
+if (index < 0) {    // Обработка ошибок: индекс вне диапазона
+    return; 
+}
+
+Node* new_node = (Node*)malloc(sizeof(Node));
+new_node->data = data;
+
+if (index == 0) {
+new_node->data = data;
+new_node->next = *head;
+*head = new_node;
+return;
+}
+
+Node* current = *head;
+int i = 0;
+while (current != NULL && i < index) {
+    current = current->next;
+    i++;
+}
+
+if (current == NULL) {      // Обработка ошибки: индекс вне диапазона
+    free(new_node);
+    return;
+}
+
+new_node->next = current->next;
+current->next = new_node;
+}
+
+void delete_element_value(Node** head, int data) {
+Node* current = *head;
+Node* prev = NULL;
+
+while (current != NULL && current->data != data) {
+    prev = current;
+    current = current->next;
+}
+
+if (current == NULL) return; // Элемент не найден
+
+if (prev == NULL) {
+    *head = current->next; // Удаление первого элемента
+} 
+else {
+    prev->next = current->next;
+}
+
+free(current);
+}
+
+Node* search_element(Node* head, int data) {
+Node* current = head;
+while (current != NULL) {
+    if (current->data == data) {
+        return current;
+    }
+    current = current->next;
+}
+return NULL;
+}
+
+void print_list(Node* head) {
+Node* current = head;
+while (current != NULL) {
+    printf("%d ", current->data);
+    current = current->next;
+}
+printf("\n");
+}
+
+void free_list(Node** head) {
+Node* current = *head;
+Node* next;
+while (current != NULL) {
+    next = current->next;
+    free(current);
+    current = next;
+}
+*head = NULL;
+}
+
+
+int main()
+{
+    Node *head = create_list();
+    add_element(&head, 0, 10);
+    add_element(&head, 0, 11);
+    add_element(&head, 0, 12);
+    delete_element_value(&head, 11);
+    print_list(head);
+    free_list(&head);
+}
